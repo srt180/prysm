@@ -175,3 +175,11 @@ var E2EBeaconChainFlags = []string{
 	"--enable-active-balance-cache",
 	"--enable-native-state",
 }
+
+// NetworkFlags contains a list of network flags.
+var NetworkFlags = []cli.Flag{
+	Mainnet,
+	PraterTestnet,
+	RopstenTestnet,
+	SepoliaTestnet,
+}
