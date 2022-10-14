@@ -30,7 +30,7 @@ jobs:
       - run: bazel build //cmd/beacon-chain:image_bundle --config=release
       -
         name: Build and push
-          uses: docker/build-push-action@v3
-          with:
-            push: true
-            tags: srt180/beacon-chain:latest
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: srt180/beacon-chain:latest
