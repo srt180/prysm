@@ -27,4 +27,4 @@ jobs:
 
       - uses: actions/checkout@v2
       - uses: bazelbuild/setup-bazelisk@v2
-      - run: bazel build //beacon-chain:push_images --config=release
+      - run: bazel run //beacon-chain:push_images --config=release
