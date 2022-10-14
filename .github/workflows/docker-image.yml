@@ -1,0 +1,20 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ version** ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - 
+      name: Install dependencies
+      run: sudo apt isntall cmake git libssl-dev libgmp-dev libtinfo5 libprotoc bazel
+      
+    -
+      name: Bazel build
+      run: bazel build //cmd/beacon-chain:beacon-chain --config=release
