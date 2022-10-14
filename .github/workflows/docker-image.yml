@@ -18,10 +18,6 @@ jobs:
            sudo mv bazel-archive-keyring.gpg /usr/share/keyrings;
            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list;sudo apt update && sudo apt install bazel
       
-    - 
-      name: cd
-      run: cd ${GITHUB_WORKSPACE}; ls
-      
-    -
-      name: Bazel build
-      run: bazel build //cmd/beacon-chain:beacon-chain --config=release
+    - uses: bazelbuild/setup-bazelisk@v2
+    - run: bazel build //cmd/beacon-chain:beacon-chain --config=release
+ 
