@@ -13,7 +13,7 @@ jobs:
     steps:
     - 
       name: Install dependencies
-      run: sudo apt isntall cmake git libssl-dev libgmp-dev libtinfo5 libprotoc bazel
+      run: sudo apt install cmake git libssl-dev libgmp-dev libtinfo5 libprotoc bazel
       
     -
       name: Bazel build
