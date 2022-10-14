@@ -20,7 +20,7 @@ jobs:
       
     - 
       name: cd
-      run: cd ${GITHUB_WORKSPACE}; pwd
+      run: cd ${GITHUB_WORKSPACE}; ls
       
     -
       name: Bazel build
