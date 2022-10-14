@@ -9,22 +9,25 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      HAVE_DOCKERHUB_SECRET: ${{ secrets.DOCKERHUB_TOKEN != '' && secrets.DOCKERHUB_USERNAME != '' }}
 
     steps:
-      -
-        name: Install dependencies
-        run: sudo apt install cmake git libssl-dev libgmp-dev libtinfo5 libprotoc-dev; sudo apt install apt-transport-https curl gnupg;
-          curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg;
-          sudo mv bazel-archive-keyring.gpg /usr/share/keyrings;
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list;sudo apt update && sudo apt install bazel
+      - name: Install packages
+        run: sudo apt-get update && sudo apt-get install -y cmake git libssl-dev libgmp-dev libtinfo5 libprotobuf-dev
 
-      -
-        name: Login to DockerHub
+      - name: Login to DockerHub
         uses: docker/login-action@v1
+        id: login
+        # If the user set up those variable, it's upstream or (s)he wants the push to happen
+        # Otherwise, it might just be someone pushing to their fork, in which case we still
+        # want to build as it's useful to test a release before upstreaming it.
+        if: env.HAVE_DOCKERHUB_SECRET
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - uses: actions/checkout@v2
-      - uses: bazelbuild/setup-bazelisk@v2
-      - run: bazel run //beacon-chain:push_images --config=release
+
+      - name: Build and push beacon-chain
+        run: bazel run //cmd/beacon-chain:push_images --config=release
