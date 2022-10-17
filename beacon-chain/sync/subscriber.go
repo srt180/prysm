@@ -213,6 +213,9 @@ func (s *Service) subscribeWithBase(topic string, validator wrappedVal, handle s
 			if msg.ReceivedFrom == s.cfg.p2p.PeerID() {
 				continue
 			}
+			if strings.Contains(topic, p2p.GossipBlockMessage) {
+				log.Infof("recv block from %s", msg.ReceivedFrom.String())
+			}
 
 			go pipeline(msg)
 		}
