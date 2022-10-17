@@ -23,6 +23,7 @@ func (s *Service) beaconBlockSubscriber(ctx context.Context, msg proto.Message) 
 	s.setSeenBlockIndexSlot(signed.Block().Slot(), signed.Block().ProposerIndex())
 
 	block := signed.Block()
+	log.WithField("blk", "propagation").Infof("subscribe slot: %d from : %v", block.Slot())
 
 	root, err := block.HashTreeRoot()
 	if err != nil {

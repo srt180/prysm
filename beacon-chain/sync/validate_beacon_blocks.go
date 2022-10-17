@@ -72,7 +72,6 @@ func (s *Service) validateBeaconBlockPubSub(ctx context.Context, pid peer.ID, ms
 	}
 
 	log.WithField("blk", "propagation").Infof("slot: %d from : %v", blk.Block().Slot(), pid.String())
-	blk.Block().Slot()
 
 	// Broadcast the block on a feed to notify other services in the beacon node
 	// of a received block (even if it does not process correctly through a state transition).
