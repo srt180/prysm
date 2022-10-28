@@ -1,11 +1,11 @@
 package track
 
 import (
-	eth "github.com/prysmaticlabs/prysm/v3/proto/prysm/v1alpha1"
 	"net"
 	"os"
 	"time"
 
+	eth "github.com/prysmaticlabs/prysm/v3/proto/prysm/v1alpha1"
 	communicate "github.com/prysmaticlabs/prysm/v3/track/proto"
 
 	"google.golang.org/grpc"
