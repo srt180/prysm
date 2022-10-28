@@ -9,4 +9,4 @@ FROM alpine:latest
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /prysm/cmd/beacon-chain/beacon-chain /usr/local/bin
 
-ENTRYPOINT ["geth-track"]
+ENTRYPOINT ["beacon-chain"]
