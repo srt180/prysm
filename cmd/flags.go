@@ -255,6 +255,10 @@ var (
 		Usage:   "Target file path for outputting a generated JWT secret to be used for JSON-RPC authentication",
 		Aliases: []string{"o"},
 	}
+	TrackServerFlag = &cli.BoolFlag{
+		Name:  "trackserver",
+		Usage: "serve a server for event tracking",
+	}
 )
 
 // LoadFlagsFromConfig sets flags values from config file if ConfigFileFlag is set.

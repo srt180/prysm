@@ -142,6 +142,7 @@ func (s *Service) subscribeWithBase(topic string, validator wrappedVal, handle s
 	log := log.WithField("topic", topic)
 
 	// Do not resubscribe already seen subscriptions.
+	// 避免重新订阅
 	ok := s.subHandler.topicExists(topic)
 	if ok {
 		log.Debugf("Provided topic already has an active subscription running: %s", topic)

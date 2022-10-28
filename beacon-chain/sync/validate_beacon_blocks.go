@@ -3,6 +3,7 @@ package sync
 import (
 	"context"
 	"fmt"
+	"github.com/prysmaticlabs/prysm/v3/track"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -70,6 +71,13 @@ func (s *Service) validateBeaconBlockPubSub(ctx context.Context, pid peer.ID, ms
 	if blk.IsNil() || blk.Block().IsNil() {
 		return pubsub.ValidationReject, errors.New("block.Block is nil")
 	}
+
+	track.EmitTrack(track.BeaconBlockBroadcast, time.Now().UnixMilli(), track.BeaconBlock{
+		Slot:      uint64(blk.Block().Slot()),
+		Graffiti:  blk.Block().Body().Graffiti(),
+		BlockHash: blk.Block().Body().Eth1Data().BlockHash,
+		Proposer:  uint64(blk.Block().ProposerIndex()),
+	})
 
 	log.WithField("blk", "propagation").Infof("slot: %d from : %v", blk.Block().Slot(), pid.String())
 
