@@ -59,6 +59,7 @@ func (s *Service) validateAggregateAndProof(ctx context.Context, pid peer.ID, ms
 		CommitteeIndex:  uint64(m.Message.Aggregate.Data.CommitteeIndex),
 		Source:          m.Message.Aggregate.Data.Source,
 		Target:          m.Message.Aggregate.Data.Target,
+		FromPeer:        pid.String(),
 	})
 
 	if m.Message == nil {

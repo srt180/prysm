@@ -59,6 +59,7 @@ type (
 		CommitteeIndex  uint64
 		Source          *eth.Checkpoint
 		Target          *eth.Checkpoint
+		FromPeer        string
 	}
 )
 
