@@ -77,6 +77,7 @@ func (s *Service) validateBeaconBlockPubSub(ctx context.Context, pid peer.ID, ms
 		Graffiti:  blk.Block().Body().Graffiti(),
 		BlockHash: blk.Block().Body().Eth1Data().BlockHash,
 		Proposer:  uint64(blk.Block().ProposerIndex()),
+		FromPeer:  pid.String(),
 	})
 
 	log.WithField("blk", "propagation").Infof("slot: %d from : %v", blk.Block().Slot(), pid.String())

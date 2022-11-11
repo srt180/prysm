@@ -53,7 +53,7 @@ func (s *Service) validateAggregateAndProof(ctx context.Context, pid peer.ID, ms
 	}
 
 	track.EmitTrack(track.AggregateAndProof, receivedTime.UnixMilli(), track.Aggregate{
-		Index:           uint64(m.Message.AggregatorIndex),
+		AggregatorIndex: uint64(m.Message.AggregatorIndex),
 		BeaconBlockRoot: m.Message.Aggregate.Data.BeaconBlockRoot,
 		Slot:            uint64(m.Message.Aggregate.Data.Slot),
 		CommitteeIndex:  uint64(m.Message.Aggregate.Data.CommitteeIndex),

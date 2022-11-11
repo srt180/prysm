@@ -2,11 +2,14 @@ package p2p
 
 import (
 	"context"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
 	"sync"
 	"time"
+
+	"github.com/prysmaticlabs/prysm/v3/track"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -59,6 +62,14 @@ func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Con
 	s.host.Network().Notify(&network.NotifyBundle{
 		ConnectedF: func(net network.Network, conn network.Conn) {
 			remotePeer := conn.RemotePeer()
+
+			pubkeyStr := ``
+			if pubkey, err := remotePeer.ExtractPublicKey(); err == nil {
+				if pubkeyBytes, err := pubkey.Raw(); err == nil {
+					pubkeyStr = hex.EncodeToString(pubkeyBytes)
+				}
+			}
+
 			disconnectFromPeer := func() {
 				s.peers.SetConnectionState(remotePeer, peers.PeerDisconnecting)
 				// Only attempt a goodbye if we are still connected to the peer.
@@ -68,6 +79,13 @@ func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Con
 					}
 				}
 				s.peers.SetConnectionState(remotePeer, peers.PeerDisconnected)
+
+				track.EmitTrack(track.BeaconPeer, time.Now().UnixMilli(), track.BeaconPeerMessage{
+					Type:      0,
+					MultiAddr: peerMultiaddrString(conn),
+					Pubkey:    pubkeyStr,
+				})
+				// peer disconnected
 			}
 			// Connection handler must be non-blocking as part of libp2p design.
 			go func() {
@@ -92,6 +110,13 @@ func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Con
 				}
 				validPeerConnection := func() {
 					s.peers.SetConnectionState(conn.RemotePeer(), peers.PeerConnected)
+
+					track.EmitTrack(track.BeaconPeer, time.Now().UnixMilli(), track.BeaconPeerMessage{
+						Type:      1,
+						MultiAddr: peerMultiaddrString(conn),
+						Pubkey:    pubkeyStr,
+					})
+					// [track] peer connected
 					// Go through the handshake process.
 					log.WithFields(logrus.Fields{
 						"direction":   conn.Stat().Direction,
@@ -170,6 +195,21 @@ func (s *Service) AddDisconnectionHandler(handler func(ctx context.Context, id p
 				if err := handler(context.TODO(), conn.RemotePeer()); err != nil {
 					log.WithError(err).Error("Disconnect handler failed")
 				}
+
+				pubkeyStr := ``
+				if pubkey, err := conn.RemotePeer().ExtractPublicKey(); err == nil {
+					if pubkeyBytes, err := pubkey.Raw(); err == nil {
+						pubkeyStr = hex.EncodeToString(pubkeyBytes)
+					}
+				}
+
+				// [track] peer disconnected
+				track.EmitTrack(track.BeaconPeer, time.Now().UnixMilli(), track.BeaconPeerMessage{
+					Type:      0,
+					MultiAddr: peerMultiaddrString(conn),
+					Pubkey:    pubkeyStr,
+				})
+
 				s.peers.SetConnectionState(conn.RemotePeer(), peers.PeerDisconnected)
 				// Only log disconnections if we were fully connected.
 				if priorState == peers.PeerConnected {

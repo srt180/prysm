@@ -22,6 +22,7 @@ const (
 	Connection
 	BeaconBlockBroadcast
 	AggregateAndProof
+	BeaconPeer
 )
 
 func (t Type) String() string {
@@ -40,6 +41,8 @@ func (t Type) String() string {
 		return "BeaconBlockBroadcast"
 	case AggregateAndProof:
 		return "AggregateAndProof"
+	case BeaconPeer:
+		return "BeaconPeer"
 	default:
 		return "Unknown"
 	}
@@ -51,15 +54,31 @@ type (
 		Graffiti  []byte
 		BlockHash []byte
 		Proposer  uint64
+		FromPeer  string
 	}
 	Aggregate struct {
-		Index           uint64
+		AggregatorIndex uint64
 		BeaconBlockRoot []byte
 		Slot            uint64
 		CommitteeIndex  uint64
 		Source          *eth.Checkpoint
 		Target          *eth.Checkpoint
 		FromPeer        string
+	}
+	//	MainnetPeerMessage struct {
+	//		Timestamp int64    `json:"timestamp" bson:"-"`
+	//		Type      uint8    `json:"type" bson:"-"`
+	//		Pubkey    string   `json:"pubkey" bson:"pubkey"`
+	//		Info      PeerInfo `json:"info" bson:",inline"`
+	//		IP        string   `json:"IP" bson:"ip"`
+	//		TCP       int      `json:"TCP" bson:"tcp"`
+	//		UDP       int      `json:"UDP" bson:"udp"`
+	//	}
+
+	BeaconPeerMessage struct {
+		Type      uint8
+		MultiAddr string
+		Pubkey    string
 	}
 )
 
