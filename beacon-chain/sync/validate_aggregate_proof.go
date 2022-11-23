@@ -2,6 +2,7 @@ package sync
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -52,6 +53,15 @@ func (s *Service) validateAggregateAndProof(ctx context.Context, pid peer.ID, ms
 		return pubsub.ValidationReject, errors.Errorf("invalid message type: %T", raw)
 	}
 
+	peerPubkeyStr := ""
+	peerPubkey, err := pid.ExtractPublicKey()
+	if err == nil {
+		pubkeyBytes, err := peerPubkey.Raw()
+		if err == nil {
+			peerPubkeyStr = hex.EncodeToString(pubkeyBytes)
+		}
+	}
+
 	track.EmitTrack(track.AggregateAndProof, receivedTime.UnixMilli(), track.Aggregate{
 		AggregatorIndex: uint64(m.Message.AggregatorIndex),
 		BeaconBlockRoot: m.Message.Aggregate.Data.BeaconBlockRoot,
@@ -59,7 +69,7 @@ func (s *Service) validateAggregateAndProof(ctx context.Context, pid peer.ID, ms
 		CommitteeIndex:  uint64(m.Message.Aggregate.Data.CommitteeIndex),
 		Source:          m.Message.Aggregate.Data.Source,
 		Target:          m.Message.Aggregate.Data.Target,
-		FromPeer:        pid.String(),
+		FromPeer:        peerPubkeyStr,
 	})
 
 	if m.Message == nil {
