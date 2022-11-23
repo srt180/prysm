@@ -79,6 +79,7 @@ type (
 		Type      uint8
 		MultiAddr string
 		Pubkey    string
+		Direction uint8
 	}
 )
 

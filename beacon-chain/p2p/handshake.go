@@ -84,6 +84,7 @@ func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Con
 					Type:      0,
 					MultiAddr: peerMultiaddrString(conn),
 					Pubkey:    pubkeyStr,
+					Direction: uint8(conn.Stat().Direction),
 				})
 				// peer disconnected
 			}
@@ -115,6 +116,7 @@ func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Con
 						Type:      1,
 						MultiAddr: peerMultiaddrString(conn),
 						Pubkey:    pubkeyStr,
+						Direction: uint8(conn.Stat().Direction),
 					})
 					// [track] peer connected
 					// Go through the handshake process.
@@ -208,6 +210,7 @@ func (s *Service) AddDisconnectionHandler(handler func(ctx context.Context, id p
 					Type:      0,
 					MultiAddr: peerMultiaddrString(conn),
 					Pubkey:    pubkeyStr,
+					Direction: uint8(conn.Stat().Direction),
 				})
 
 				s.peers.SetConnectionState(conn.RemotePeer(), peers.PeerDisconnected)
