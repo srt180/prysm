@@ -63,6 +63,11 @@ func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Con
 		ConnectedF: func(net network.Network, conn network.Conn) {
 			remotePeer := conn.RemotePeer()
 
+			agentVersion := ""
+			if av, err := s.host.Peerstore().Get(remotePeer, "AgentVersion"); err == nil {
+				agentVersion = av.(string)
+			}
+
 			pubkeyStr := ``
 			if pubkey, err := remotePeer.ExtractPublicKey(); err == nil {
 				if pubkeyBytes, err := pubkey.Raw(); err == nil {
@@ -81,10 +86,11 @@ func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Con
 				s.peers.SetConnectionState(remotePeer, peers.PeerDisconnected)
 
 				track.EmitTrack(track.BeaconPeer, time.Now().UnixMilli(), track.BeaconPeerMessage{
-					Type:      0,
-					MultiAddr: peerMultiaddrString(conn),
-					Pubkey:    pubkeyStr,
-					Direction: uint8(conn.Stat().Direction),
+					AgentVersion: agentVersion,
+					Type:         0,
+					MultiAddr:    peerMultiaddrString(conn),
+					Pubkey:       pubkeyStr,
+					Direction:    uint8(conn.Stat().Direction),
 				})
 				// peer disconnected
 			}
@@ -113,10 +119,11 @@ func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Con
 					s.peers.SetConnectionState(conn.RemotePeer(), peers.PeerConnected)
 
 					track.EmitTrack(track.BeaconPeer, time.Now().UnixMilli(), track.BeaconPeerMessage{
-						Type:      1,
-						MultiAddr: peerMultiaddrString(conn),
-						Pubkey:    pubkeyStr,
-						Direction: uint8(conn.Stat().Direction),
+						AgentVersion: agentVersion,
+						Type:         1,
+						MultiAddr:    peerMultiaddrString(conn),
+						Pubkey:       pubkeyStr,
+						Direction:    uint8(conn.Stat().Direction),
 					})
 					// [track] peer connected
 					// Go through the handshake process.
@@ -198,6 +205,11 @@ func (s *Service) AddDisconnectionHandler(handler func(ctx context.Context, id p
 					log.WithError(err).Error("Disconnect handler failed")
 				}
 
+				agentVersion := ""
+				if av, err := s.host.Peerstore().Get(conn.RemotePeer(), "AgentVersion"); err == nil {
+					agentVersion = av.(string)
+				}
+
 				pubkeyStr := ``
 				if pubkey, err := conn.RemotePeer().ExtractPublicKey(); err == nil {
 					if pubkeyBytes, err := pubkey.Raw(); err == nil {
@@ -207,10 +219,11 @@ func (s *Service) AddDisconnectionHandler(handler func(ctx context.Context, id p
 
 				// [track] peer disconnected
 				track.EmitTrack(track.BeaconPeer, time.Now().UnixMilli(), track.BeaconPeerMessage{
-					Type:      0,
-					MultiAddr: peerMultiaddrString(conn),
-					Pubkey:    pubkeyStr,
-					Direction: uint8(conn.Stat().Direction),
+					AgentVersion: agentVersion,
+					Type:         0,
+					MultiAddr:    peerMultiaddrString(conn),
+					Pubkey:       pubkeyStr,
+					Direction:    uint8(conn.Stat().Direction),
 				})
 
 				s.peers.SetConnectionState(conn.RemotePeer(), peers.PeerDisconnected)

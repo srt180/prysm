@@ -76,10 +76,11 @@ type (
 	//	}
 
 	BeaconPeerMessage struct {
-		Type      uint8
-		MultiAddr string
-		Pubkey    string
-		Direction uint8
+		Type         uint8
+		MultiAddr    string
+		Pubkey       string
+		AgentVersion string
+		Direction    uint8
 	}
 )
 
