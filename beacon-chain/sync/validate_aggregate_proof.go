@@ -62,6 +62,10 @@ func (s *Service) validateAggregateAndProof(ctx context.Context, pid peer.ID, ms
 		}
 	}
 
+	if m.Message == nil {
+		return pubsub.ValidationReject, errNilMessage
+	}
+
 	track.EmitTrack(track.AggregateAndProof, receivedTime.UnixMilli(), track.Aggregate{
 		AggregatorIndex: uint64(m.Message.AggregatorIndex),
 		BeaconBlockRoot: m.Message.Aggregate.Data.BeaconBlockRoot,
@@ -70,11 +74,9 @@ func (s *Service) validateAggregateAndProof(ctx context.Context, pid peer.ID, ms
 		Source:          m.Message.Aggregate.Data.Source,
 		Target:          m.Message.Aggregate.Data.Target,
 		FromPeer:        peerPubkeyStr,
+		BitList:         hex.EncodeToString(m.Message.Aggregate.AggregationBits),
 	})
 
-	if m.Message == nil {
-		return pubsub.ValidationReject, errNilMessage
-	}
 	if err := helpers.ValidateNilAttestation(m.Message.Aggregate); err != nil {
 		return pubsub.ValidationReject, err
 	}
