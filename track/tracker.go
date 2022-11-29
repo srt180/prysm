@@ -65,6 +65,7 @@ type (
 		Target          *eth.Checkpoint
 		FromPeer        string
 		BitList         string
+		BitCount        uint64
 	}
 	//	MainnetPeerMessage struct {
 	//		Timestamp int64    `json:"timestamp" bson:"-"`

@@ -75,6 +75,7 @@ func (s *Service) validateAggregateAndProof(ctx context.Context, pid peer.ID, ms
 		Target:          m.Message.Aggregate.Data.Target,
 		FromPeer:        peerPubkeyStr,
 		BitList:         hex.EncodeToString(m.Message.Aggregate.AggregationBits),
+		BitCount:        m.Message.Aggregate.AggregationBits.Count(),
 	})
 
 	if err := helpers.ValidateNilAttestation(m.Message.Aggregate); err != nil {
