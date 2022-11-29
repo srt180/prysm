@@ -481,7 +481,7 @@ func (a *Attestation) MarshalJSON() ([]byte, error) {
 		Data            *AttestationData `json:"data,omitempty"`
 		Signature       hexutil.Bytes    `json:"signature,omitempty" ssz-size:"96"`
 	}{
-		AggregationBits: hexutil.Bytes(a.Attestation.AggregationBits),
+		AggregationBits: hexutil.Bytes(a.Attestation.AggregationBits.Bytes()),
 		Data:            &AttestationData{a.Attestation.Data},
 		Signature:       a.Attestation.Signature,
 	})
