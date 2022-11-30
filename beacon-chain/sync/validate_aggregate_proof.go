@@ -74,7 +74,7 @@ func (s *Service) validateAggregateAndProof(ctx context.Context, pid peer.ID, ms
 		Source:          m.Message.Aggregate.Data.Source,
 		Target:          m.Message.Aggregate.Data.Target,
 		FromPeer:        peerPubkeyStr,
-		BitList:         hex.EncodeToString(m.Message.Aggregate.AggregationBits),
+		BitList:         hex.EncodeToString(m.Message.Aggregate.AggregationBits.Bytes()),
 		BitCount:        m.Message.Aggregate.AggregationBits.Count(),
 	})
 
