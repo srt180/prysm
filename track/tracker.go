@@ -83,6 +83,7 @@ type (
 		Pubkey       string
 		AgentVersion string
 		Direction    uint8
+		ENR          string
 	}
 )
 
