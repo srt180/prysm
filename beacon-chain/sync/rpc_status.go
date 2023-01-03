@@ -204,6 +204,7 @@ func (s *Service) statusRPCHandler(ctx context.Context, msg interface{}, stream 
 	s.rateLimiter.add(stream, 1)
 
 	remotePeer := stream.Conn().RemotePeer()
+	log.Infof("receive status %s from %s", m.String(), stream.Conn().RemoteMultiaddr().String())
 	if err := s.validateStatusMessage(ctx, m); err != nil {
 		log.WithFields(logrus.Fields{
 			"peer":  remotePeer,
